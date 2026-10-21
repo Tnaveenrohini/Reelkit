@@ -1,6 +1,0 @@
-fastapi
-uvicorn
-yt-dlp
-faster-whisper
-demucs
-torchaudio
