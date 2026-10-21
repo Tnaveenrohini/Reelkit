@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReelKit – Instagram Video Downloader</title>
+<meta name="description" content="ReelKit downloads Instagram videos, Reels, photos, Stories and carousels, and adds AI tools: vocal splitter, video-to-script and caption copier.">
+<meta property="og:image" content="/logo.png">
+<link rel="icon" href="/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#111216;--card:#1a1c22;--line:#2b2e38;--gold:#f7b52c;--amber:#e88a0c;--text:#f3f2ee;--mute:#9a9ca6;--r:14px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.6 Sora,system-ui,sans-serif}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:14px;padding:12px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;text-decoration:none}
+.brand img{width:38px;height:38px;border-radius:10px}
+nav{display:flex;gap:6px;overflow-x:auto;padding:0 0 12px;scrollbar-width:none}
+nav a{white-space:nowrap;text-decoration:none;color:var(--mute);padding:6px 14px;border-radius:99px;font-size:14px;border:1px solid transparent}
+nav a:hover{color:var(--text)}
+nav a.on{color:#1a1204;background:linear-gradient(135deg,var(--gold),var(--amber));font-weight:600}
+nav a.ai{border-color:var(--line)}
+.hero{text-align:center;padding:48px 0 28px}
+h1{font-size:clamp(30px,6vw,46px);line-height:1.15;margin:0 0 10px;font-weight:800}
+.hero p{color:var(--mute);margin:0 auto 26px;max-width:520px}
+form{display:flex;gap:8px;background:var(--card);border:1px solid var(--line);padding:8px;border-radius:var(--r);flex-wrap:wrap}
+input{flex:1 1 220px;min-width:0;background:transparent;border:0;color:var(--text);font:inherit;padding:10px 12px}
+input:focus{outline:none}
+button,.btn{font:600 15px Sora,sans-serif;border:0;border-radius:10px;padding:10px 18px;cursor:pointer;text-decoration:none;display:inline-block;color:var(--text);background:#2a2d37}
+button:hover,.btn:hover{filter:brightness(1.15)}
+button.go,.btn{color:#1a1204;background:linear-gradient(135deg,var(--gold),var(--amber))}
+button:disabled{opacity:.55;cursor:wait}
+#out{margin:22px 0 0;text-align:left}
+.note{color:var(--mute);text-align:center}.err{color:#ff8a7a;text-align:center}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:s .8s linear infinite;vertical-align:-2px;margin-right:8px}
+@keyframes s{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:3s}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.card .th{width:150px;height:190px;object-fit:cover;border-radius:10px;background:#000}
+.card .meta{flex:1 1 240px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.card p{margin:0;color:var(--mute);font-size:14px;word-break:break-word}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+textarea{width:100%;min-height:150px;background:#101116;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px;font:14px/1.6 Sora,sans-serif;resize:vertical}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chips span{background:#2a2d37;border-radius:99px;padding:2px 12px;font-size:13px;color:var(--gold)}
+.seg{display:flex;gap:12px;font-size:14px;padding:4px 0}.seg time{color:var(--gold);flex:none;width:44px}
+audio{width:100%}
+section{padding:36px 0;border-top:1px solid var(--line)}
+h2{font-size:26px;margin:0 0 12px}
+.steps,.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:18px}
+.steps div,.feat div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+h3{margin:0 0 6px;font-size:17px}.steps p,.feat p{margin:0;color:var(--mute);font-size:14px}
+details{border-bottom:1px solid var(--line);padding:14px 0}summary{cursor:pointer;font-weight:600}details p{color:var(--mute);margin:8px 0 0}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--mute);font-size:14px;text-align:center}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="top"><a class="brand" href="#video"><img src="/icon.png" alt="">ReelKit</a></div>
+  <nav id="nav">
+    <a href="#video">Video</a><a href="#photo">Photo</a><a href="#reels">Reels</a><a href="#story">Story</a><a href="#carousel">Carousel</a>
+    <a class="ai" href="#splitter">Vocal Splitter</a><a class="ai" href="#script">Video to Script</a><a class="ai" href="#caption">Caption Copier</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <div class="hero">
+    <h1 id="h"></h1><p id="p"></p>
+    <form id="f"><input id="u" type="url" placeholder="Paste an Instagram link" aria-label="Instagram link" autocomplete="off">
+      <button type="button" id="paste">Paste</button><button type="button" id="clear">Clear</button><button class="go" id="go"></button></form>
+    <div id="out" aria-live="polite"></div>
+  </div>
+
+  <section><h2>How to download from Instagram</h2>
+    <div class="steps">
+      <div><h3>Copy the URL</h3><p>Open Instagram, tap the share menu on a post, Reel, Story or carousel, and copy its link.</p></div>
+      <div><h3>Paste the link</h3><p>Come back to ReelKit, paste the link into the field and press the button.</p></div>
+      <div><h3>Save the result</h3><p>Download the file, or copy the caption, script or separated audio.</p></div>
+    </div></section>
+
+  <section><h2>Everything in one kit</h2>
+    <div class="feat">
+      <div><h3>Video, Reels and IGTV</h3><p>Save MP4 files without watermarks in the original quality.</p></div>
+      <div><h3>Photos and carousels</h3><p>Pick any slide of an album and download it on its own.</p></div>
+      <div><h3>AI BGM &amp; Vocal Splitter</h3><p>Splits a Reel into a voice track and a music-only track using Demucs.</p></div>
+      <div><h3>Video-to-Script</h3><p>Transcribes speech with Whisper and gives you timestamps you can copy.</p></div>
+      <div><h3>Caption &amp; Hashtag Copier</h3><p>Copies the caption, hashtags or caption without hashtags in one tap.</p></div>
+      <div><h3>No login</h3><p>No account and no Instagram password. Files are deleted from the server after use.</p></div>
+    </div></section>
+
+  <section><h2>Frequently asked questions</h2>
+    <details><summary>Is downloading from Instagram legal?</summary><p>Saving public posts for personal use is generally fine, but the copyright belongs to the creator. Keep files private unless you have permission to reuse them.</p></details>
+    <details><summary>Can I download from private accounts?</summary><p>No. Only public posts work. If you can’t see the post while logged out, ReelKit can’t fetch it either.</p></details>
+    <details><summary>Which languages does Video-to-Script understand?</summary><p>Whisper detects the spoken language automatically and supports about 100 of them.</p></details>
+    <details><summary>Why is the vocal splitter slow?</summary><p>Separation is a heavy AI task. A 30-second Reel takes about a minute on a modern CPU and a few seconds on a GPU.</p></details>
+    <details><summary>Are my links stored?</summary><p>No. Temporary files are removed after download or within an hour.</p></details>
+  </section>
+</main>
+<footer><div class="wrap">© 2026 ReelKit. Not affiliated with Instagram or Meta.</div></footer>
+
+<script src="config.js"></script>
+<script>
+const API=(window.API_BASE||'').replace(/\/$/,'');
+const $=s=>document.querySelector(s);
+const T={download:['Instagram Downloader','Save Instagram videos, Reels, photos, Stories and carousels.','Download'],
+ split:['AI BGM & Vocal Splitter','Separate the voice from the background music of any Reel.','Split audio'],
+ script:['Video-to-Script (AI)','Turn the speech in any Reel into a timestamped script.','Get script'],
+ caption:['Caption & Hashtag Copier','Copy the caption, hashtags and mentions from any post.','Get caption']};
+const M={video:'download',photo:'download',reels:'download',story:'download',carousel:'download',splitter:'split',script:'script',caption:'caption'};
+let cur='download';
+function route(){const s=M[location.hash.slice(1)]?location.hash.slice(1):'video';cur=M[s];
+ document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.hash==='#'+s));
+ [$('#h').textContent,$('#p').textContent,$('#go').textContent]=T[cur];$('#out').replaceChildren();document.title=T[cur][0]+' – ReelKit'}
+addEventListener('hashchange',route);route();
+
+function h(t,a={},...c){const e=document.createElement(t);for(const k in a){if(k==='class')e.className=a[k];else if(k.startsWith('on'))e[k]=a[k];else e.setAttribute(k,a[k])}e.append(...c.flat().filter(x=>x!=null&&x!==false));return e}
+const out=(...n)=>$('#out').replaceChildren(...n);
+const msg=(t,err,spin)=>out(h('p',{class:err?'err':'note'},spin?h('span',{class:'spin'}):null,t));
+const cp=(t,b)=>navigator.clipboard.writeText(t).then(()=>{const o=b.textContent;b.textContent='Copied';setTimeout(()=>b.textContent=o,1400)});
+const copyBtn=(label,text)=>h('button',{type:'button',onclick:e=>cp(typeof text==='function'?text():text,e.target)},label);
+async function api(path,body){const r=await fetch(API+path,{method:body?'POST':'GET',headers:{'Content-Type':'application/json'},body:body&&JSON.stringify(body)});
+ const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.detail||'Something went wrong. Try again.');return j}
+
+$('#paste').onclick=async()=>{try{$('#u').value=await navigator.clipboard.readText()}catch{msg('Allow clipboard access, or paste with Ctrl+V.',true)}};
+$('#clear').onclick=()=>{$('#u').value='';out();$('#u').focus()};
+
+$('#f').onsubmit=async e=>{e.preventDefault();const url=$('#u').value.trim();if(!url)return msg('Paste an Instagram link first.',true);
+ $('#go').disabled=true;const mode=cur;
+ try{
+  if(mode==='download'||mode==='caption'){msg('Reading the post',false,true);const d=await api('/api/info',{url});mode==='download'?showDl(d,url):showCap(d)}
+  else{const {id}=await api('/api/start/'+mode,{url});
+   for(;;){const j=await api('/api/job/'+id);if(j.status==='error')throw new Error(j.error);
+    if(j.status==='done'){mode==='split'?showSplit(j.result):showScript(j.result);break}
+    msg(j.step,false,true);await new Promise(r=>setTimeout(r,2000))}}
+ }catch(x){msg(x.message,true)}
+ $('#go').disabled=false};
+
+function showDl(d,url){out(h('div',{class:'card'},
+ d.thumb&&h('img',{class:'th',src:d.thumb,alt:'',referrerpolicy:'no-referrer'}),
+ h('div',{class:'meta'},h('b',{},'@'+(d.uploader||'instagram')),h('p',{},(d.caption||'').slice(0,160)),
+  h('div',{class:'row'},d.items.map((it,i)=>h('a',{class:'btn',href:`${API}/api/download?url=${encodeURIComponent(url)}&index=${i}`},
+   `Download ${it.type}${d.items.length>1?' '+(i+1):''}`))))))}
+
+function showCap(d){const bare=d.caption.replace(/#\w+/g,'').replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+ out(h('div',{class:'card',style:'display:block'},
+  d.caption?h('textarea',{readonly:'',value:d.caption},d.caption):h('p',{},'This post has no caption.'),
+  h('div',{class:'chips',style:'margin:12px 0'},d.hashtags.map(t=>h('span',{},t))),
+  h('div',{class:'row'},copyBtn('Copy caption',d.caption),copyBtn('Copy hashtags',d.hashtags.join(' ')),
+   copyBtn('Copy without hashtags',bare),d.mentions.length?copyBtn('Copy mentions',d.mentions.join(' ')):null)))}
+
+const ts=s=>new Date(s*1000).toISOString().slice(14,19);
+function showScript(r){if(!r.segments.length)return msg('No speech found in this video.',true);
+ const plain=r.segments.map(s=>s.text).join('\n'),timed=r.segments.map(s=>`[${ts(s.start)}] ${s.text}`).join('\n');
+ const dl=h('button',{type:'button',onclick:()=>{const a=h('a',{href:URL.createObjectURL(new Blob([timed])),download:'reelkit-script.txt'});a.click()}},'Download .txt');
+ out(h('div',{class:'card',style:'display:block'},h('p',{style:'margin-bottom:10px'},'Detected language: '+r.language),
+  r.segments.map(s=>h('div',{class:'seg'},h('time',{},ts(s.start)),h('span',{},s.text))),
+  h('div',{class:'row',style:'margin-top:14px'},copyBtn('Copy script',plain),copyBtn('Copy with timestamps',timed),dl)))}
+
+function showSplit(r){const t=(n,u,f)=>h('div',{class:'card',style:'display:block'},h('h3',{},n),h('audio',{controls:'',src:API+u}),
+  h('a',{class:'btn',href:API+u+'?dl=1',download:f,style:'margin-top:10px'},'Download MP3'));
+ out(t('Vocals',r.vocals,'reelkit-vocals.mp3'),t('Background music (BGM)',r.bgm,'reelkit-bgm.mp3'))}
+</script>
+</body>
+</html>
